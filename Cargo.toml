@@ -1,0 +1,44 @@
+[package]
+name = "rust-social-app"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+futures = "0.3"
+tokio = { version = "1.38", features = ["full"] }
+axum = { version = "0.7", features = ["tower-log"] }
+sqlx = { version = "0.7", features = [
+    "runtime-tokio-native-tls",
+    "postgres",
+    "uuid",
+    "time",
+] }
+
+clap = { version = "4.5", features = ["derive", "env"] }
+serde = { version = "1.0", features = ["derive"] }
+
+# State of the art password hashing.
+argon2 = "0.5"
+
+# Axum builds on the types in Tower
+tower = "0.4.13"
+tower-http = { version = "0.5.2", features = ["trace", "add-extension"] }
+
+# JSON Web Tokens
+jwt = "0.16.0"
+hmac = "0.12.1"
+sha2 = "0.10"
+
+time = "0.3.36"
+
+# Utilities
+anyhow = "1.0"
+async-trait = "0.1.80"
+dotenv = "0.15"
+env_logger = "0.11"
+itertools = "0.13"
+log = "0.4.21"
+rand = "0.8"
+thiserror = "1.0.61"
