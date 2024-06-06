@@ -173,3 +173,29 @@ where
         Self::from_authorization(&ctx, auth_header).await
     }
 }
+
+// #[async_trait]
+// impl<S> FromRequestParts<S> for MaybeAuthUser
+// where
+//     S: Send + Sync,
+// {
+//     type Rejection = Error;
+
+//     async fn from_request_parts(parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
+//         let Extension(ctx) = Extension::<ApiContext>::from_request_parts(parts, state)
+//             .await
+//             .expect("BUG: ApiContext was not added as an extension");
+
+//         let auth_header = parts.headers.get(AUTHORIZATION);
+
+//         let auth_user = match auth_header {
+//             Some(auth_header) => {
+//                 let auth_user = AuthUser::from_authorization(&ctx, auth_header).await?;
+//                 Some(auth_user)
+//             }
+//             None => None,
+//         };
+
+//         Ok(Self(auth_user))
+//     }
+// }
