@@ -25,6 +25,7 @@ mod error;
 //
 // See `api_router()` below for the recommended order.
 mod extractor;
+mod profiles;
 mod users;
 mod validator;
 
@@ -61,5 +62,5 @@ pub async fn serve(config: Config, db: PgPool) -> anyhow::Result<()> {
 }
 
 fn api_router() -> Router {
-    users::router()
+    users::router().merge(profiles::router())
 }
