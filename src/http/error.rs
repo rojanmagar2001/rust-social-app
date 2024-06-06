@@ -130,10 +130,18 @@ impl IntoResponse for Error {
             Self::UnprocessableEntity { errors } => {
                 #[derive(serde::Serialize)]
                 struct Errors {
+                    success: bool,
                     errors: HashMap<Cow<'static, str>, Vec<Cow<'static, str>>>,
                 }
 
-                return (StatusCode::UNPROCESSABLE_ENTITY, Json(Errors { errors })).into_response();
+                return (
+                    StatusCode::UNPROCESSABLE_ENTITY,
+                    Json(Errors {
+                        success: false,
+                        errors,
+                    }),
+                )
+                    .into_response();
             }
             _ => (),
         }
