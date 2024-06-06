@@ -19,15 +19,15 @@ use tower_http::body::Full;
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     // Return `401 Unathorized` when the user is not authenticated.
-    #[error("authentication required")]
+    #[error("Authentication Required")]
     Unathorized,
 
     /// Return `403 Forbidden` when the user is authenticated but not authorized to perform the action.
-    #[error("user may not nperform that action")]
+    #[error("User may not perform this action")]
     Forbidden,
 
     /// Return `404 Not Found` when a resource is not found.
-    #[error("resource path not found")]
+    #[error("Resource path not found")]
     NotFound,
 
     /// Return `422 Unprocessable Entity`
@@ -40,7 +40,7 @@ pub enum Error {
     /// that the frontend can deal with, but I do admit sometimes I've just gotten lazy and
     /// returned a plain error message if there were few enough error modes for a route
     /// that the frontend could infer the error from the status code alone.
-    #[error("error in the request body")]
+    #[error("Error in the request body")]
     UnprocessableEntity {
         errors: HashMap<Cow<'static, str>, Vec<Cow<'static, str>>>,
     },
@@ -60,7 +60,7 @@ pub enum Error {
     /// Note that this could also contain database constraint errors, which should usually
     /// be transformed into client errors (e.g. `422 Unprocessable Entity` or `409 Conflict`).
     /// See `ResultExt` below for a convenient way to do this.
-    #[error("an error occured with the database")]
+    #[error("An error occured with the database")]
     Sqlx(#[from] sqlx::Error),
 
     /// Return `500 Internal Server Error` on a `anyhow::Error`.
@@ -75,7 +75,7 @@ pub enum Error {
     ///
     /// Like with `Error::Sqlx`, the actual error message is not returned to the client
     /// for security reasons.
-    #[error("an internal server error occured")]
+    #[error("An internal server error occured")]
     Anyhow(#[from] anyhow::Error),
 }
 
@@ -113,6 +113,12 @@ impl Error {
     }
 }
 
+#[derive(serde::Serialize)]
+struct ErrorBody {
+    success: bool,
+    message: String,
+}
+
 /// Axum allows you to return `Result` from handler functions, but the error type
 /// also must be some sort of response type.
 ///
@@ -132,7 +138,14 @@ impl IntoResponse for Error {
             _ => (),
         }
 
-        (self.status_code(), self.to_string()).into_response()
+        (
+            self.status_code(),
+            Json(ErrorBody {
+                success: false,
+                message: self.to_string(),
+            }),
+        )
+            .into_response()
     }
 }
 
