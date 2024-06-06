@@ -42,3 +42,6 @@ itertools = "0.13"
 log = "0.4.21"
 rand = "0.8"
 thiserror = "1.0.61"
+validator = { version = "0.18.1", features = ["derive"] }
+axum-valid = "0.18.0"
+uuid = { version = "1.8.0", features = ["serde"] }
